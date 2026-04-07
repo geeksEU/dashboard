@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 
 const navItems = [
   { label: "Accueil", href: "/", icon: "⊞" },
+  { label: "News", href: "/news", icon: "◈" },
   // Ajouter des pages ici au fur et à mesure
 ];
 

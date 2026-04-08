@@ -37,6 +37,14 @@ export async function getTodayNews(): Promise<NewsItem[]> {
     "https://news.google.com/rss/topics/CAAqKggKIiRDQkFTRlFvSUwyMHZNRGx6TVdZU0JXWnlMVVpTR2dKR1VpZ0FQAQ?hl=fr&gl=FR&ceid=FR:fr",
     // Google News — Marchés financiers
     "https://news.google.com/rss/search?q=march%C3%A9s+financiers+bourse&hl=fr&gl=FR&ceid=FR:fr",
+    // Google News — Géopolitique & conflits (impact marchés)
+    "https://news.google.com/rss/search?q=guerre+OR+cessez-le-feu+OR+sanctions+OR+conflit+OR+OTAN+OR+embargo&hl=fr&gl=FR&ceid=FR:fr",
+    // Google News — Pétrole, énergie, matières premières
+    "https://news.google.com/rss/search?q=p%C3%A9trole+OR+OPEP+OR+gaz+OR+mati%C3%A8res+premi%C3%A8res+OR+or+cours&hl=fr&gl=FR&ceid=FR:fr",
+    // Google News — Banques centrales & politique monétaire
+    "https://news.google.com/rss/search?q=BCE+OR+Fed+OR+taux+directeur+OR+inflation+OR+banque+centrale&hl=fr&gl=FR&ceid=FR:fr",
+    // Google News — À la Une (actualité générale majeure)
+    "https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRFZxYUdjU0JXWnlMVVpTS0FBUAE?hl=fr&gl=FR&ceid=FR:fr",
   ];
 
   const allItems: NewsItem[] = [];

@@ -31,6 +31,13 @@ export interface NewsItem {
   source: string;
 }
 
+interface RawNewsItem {
+  title: string;
+  link: string;
+  pubDate: string;
+  source: string;
+}
+
 export async function getTodayNews(): Promise<NewsItem[]> {
   const feeds = [
     // Google News — Économie France
@@ -47,7 +54,7 @@ export async function getTodayNews(): Promise<NewsItem[]> {
     "https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRFZxYUdjU0JXWnlMVVpTS0FBUAE?hl=fr&gl=FR&ceid=FR:fr",
   ];
 
-  const allItems: NewsItem[] = [];
+  const allItems: RawNewsItem[] = [];
 
   for (const url of feeds) {
     try {
@@ -59,9 +66,7 @@ export async function getTodayNews(): Promise<NewsItem[]> {
         allItems.push({
           title: item.title,
           link: item.link,
-          time: item.pubDate
-            ? new Date(item.pubDate).toLocaleTimeString("fr-FR", { timeZone: "Europe/Paris", hour: "2-digit", minute: "2-digit" })
-            : "",
+          pubDate: item.pubDate,
           source: item.source,
         });
       }
@@ -70,22 +75,31 @@ export async function getTodayNews(): Promise<NewsItem[]> {
     }
   }
 
-  // Filter today (Paris) and deduplicate by title
-  const todayParis = new Date().toLocaleDateString("fr-FR", { timeZone: "Europe/Paris" });
+  // Filter today (Paris timezone) and deduplicate by title
+  const todayParis = new Date().toLocaleDateString("en-CA", { timeZone: "Europe/Paris" }); // YYYY-MM-DD
   const seen = new Set<string>();
 
-  return allItems.filter((item) => {
-    if (seen.has(item.title)) return false;
-    seen.add(item.title);
-    // Keep all if we can't parse date, otherwise filter today
-    if (!item.time) return true;
-    try {
-      const itemDate = new Date(item.link ? item.time : "").toLocaleDateString("fr-FR", { timeZone: "Europe/Paris" });
-      return itemDate === todayParis;
-    } catch {
-      return true;
-    }
-  });
+  return allItems
+    .filter((item) => {
+      if (seen.has(item.title)) return false;
+      seen.add(item.title);
+      if (!item.pubDate) return true;
+      try {
+        const itemDate = new Date(item.pubDate).toLocaleDateString("en-CA", { timeZone: "Europe/Paris" });
+        return itemDate === todayParis;
+      } catch {
+        return true;
+      }
+    })
+    .map((item) => ({
+      title: item.title,
+      link: item.link,
+      time: item.pubDate
+        ? new Date(item.pubDate).toLocaleTimeString("fr-FR", { timeZone: "Europe/Paris", hour: "2-digit", minute: "2-digit" })
+        : "",
+      source: item.source,
+    }))
+    .sort((a, b) => b.time.localeCompare(a.time)); // Plus récents en premier
 }
 
 // --- Economic calendar from Forex Factory (free JSON, no key) ---
